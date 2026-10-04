@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "트렌드포스",
+    "slug": "trend-force-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#2563EB"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.trendforce.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#2563EB"
+      },
+      "package": "com.trendforce.app"
+    }
+  }
+}
