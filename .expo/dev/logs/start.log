@@ -771,3 +771,38 @@
 {"_e":"metro:client_log","_t":1791095418004,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
 {"_e":"metro:client_log","_t":1791095434245,"level":"warn","data":["props.pointerEvents is deprecated. Use style.pointerEvents"]}
 {"_e":"metro:client_log","_t":1791095434250,"level":"warn","data":["Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md"]}
+{"_e":"root:init","_t":1791095950180,"format":"v0-jsonl","version":"57.0.27"}
+{"_e":"env:mode","_t":1791095950180,"nodeEnv":"development","babelEnv":"development","mode":"development"}
+{"_e":"env:load","_t":1791095950182,"mode":"development","files":[],"env":{}}
+{"_e":"devserver:start","_t":1791095950341,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../..\\..\\app","serverComponents":false,"serverActions":false,"serverRendering":false,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1791095950564,"serverRoot":"../..\\..","projectRoot":"../..\\..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":false,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"expo:dev-tools-plugin:load","_t":1791095950712,"plugins":[]}
+{"_e":"metro:instantiate","_t":1791095954687,"atlas":false,"workers":8,"host":"::","port":8081}
+{"_e":"metro:bundling:started","_t":1791095958715,"id":"1","platform":"web","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1791095958715,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1791095958718,"id":"1","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1791095958819,"id":"1","progress":0.47265625,"total":112,"current":77}
+{"_e":"metro:bundling:progress","_t":1791095958948,"id":"1","progress":0.8622448979591837,"total":266,"current":247}
+{"_e":"metro:bundling:done","_t":1791095958991,"id":"1","total":266,"ms":276.1771}
+{"_e":"metro:client_log","_t":1791095959096,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1791095959097,"level":"warn","data":["\"shadow*\" style props are deprecated. Use \"boxShadow\"."]}
+{"_e":"metro:client_log","_t":1791095959097,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1791095960553,"level":"warn","data":["props.pointerEvents is deprecated. Use style.pointerEvents"]}
+{"_e":"metro:client_log","_t":1791095960558,"level":"warn","data":["Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md"]}
+{"_e":"metro:bundling:started","_t":1791096428824,"id":"5","platform":"android","environment":null,"entry":"node_modules\\expo\\AppEntry.js"}
+{"_e":"metro:bundling:progress","_t":1791096428824,"id":"5","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1791096428826,"id":"5","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1791096428926,"id":"5","progress":0.21120869171570847,"total":235,"current":108}
+{"_e":"metro:bundling:progress","_t":1791096429026,"id":"5","progress":0.44059645870290465,"total":461,"current":306}
+{"_e":"metro:bundling:progress","_t":1791096429126,"id":"5","progress":0.7677097505668934,"total":630,"current":552}
+{"_e":"metro:bundling:progress","_t":1791096429226,"id":"5","progress":0.7677097505668934,"total":630,"current":552}
+{"_e":"metro:bundling:progress","_t":1791096429326,"id":"5","progress":0.9716728293186218,"total":701,"current":691}
+{"_e":"metro:bundling:progress","_t":1791096429427,"id":"5","progress":0.9716728293186218,"total":701,"current":691}
+{"_e":"metro:bundling:progress","_t":1791096429532,"id":"5","progress":0.9716728293186218,"total":701,"current":691}
+{"_e":"metro:bundling:progress","_t":1791096430149,"id":"5","progress":0.999,"total":704,"current":704}
+{"_e":"metro:bundling:progress","_t":1791096430250,"id":"5","progress":0.999,"total":720,"current":713}
+{"_e":"metro:bundling:progress","_t":1791096430654,"id":"5","progress":0.999,"total":720,"current":714}
+{"_e":"metro:bundling:progress","_t":1791096430759,"id":"5","progress":0.999,"total":723,"current":719}
+{"_e":"metro:bundling:progress","_t":1791096430862,"id":"5","progress":0.999,"total":724,"current":724}
+{"_e":"metro:bundling:done","_t":1791096430903,"id":"5","total":724,"ms":2078.8936}
+{"_e":"metro:client_log","_t":1791096434078,"level":"warn","data":["SafeAreaView has been deprecated and will be removed in a future release. Please use 'react-native-safe-area-context' instead. See https://github.com/AppAndFlow/react-native-safe-area-context"]}
