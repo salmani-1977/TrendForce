@@ -17,6 +17,11 @@
         "backgroundColor": "#2563EB"
       },
       "package": "com.trendforce.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
     }
   }
 }
