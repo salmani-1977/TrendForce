@@ -53,12 +53,44 @@ export default function App() {
         `;
         document.head.appendChild(style);
       }
+
+      // [1-1단계 공정] 윈도우 회색 바탕 마우스 휠 스크롤 연동 핸들러
+      const handleGlobalWheel = (e: WheelEvent) => {
+        const appContainer = document.getElementById('mobile-app-root-container');
+        if (!appContainer) return;
+
+        const target = e.target as HTMLElement | null;
+        // 커서가 앱 컨테이너 바깥(윈도우 회색 배경 영역)에 있거나 outerBackground에 있는 경우
+        const isInsideApp = target ? appContainer.contains(target) : false;
+
+        if (!isInsideApp) {
+          // 앱 프레임 내부에서 현재 활성화된 스크롤 가능 영역(ScrollView div) 탐색
+          const scrollables = Array.from(appContainer.querySelectorAll('*')).filter((el) => {
+            const htmlEl = el as HTMLElement;
+            const style = window.getComputedStyle(htmlEl);
+            const overflowY = style.overflowY;
+            const isScrollable = (overflowY === 'auto' || overflowY === 'scroll') && htmlEl.scrollHeight > htmlEl.clientHeight;
+            return isScrollable;
+          }) as HTMLElement[];
+
+          if (scrollables.length > 0) {
+            // 최상단/최근 활성 스크롤 영역에 deltaY 휠 값 전달
+            const activeScrollable = scrollables[scrollables.length - 1];
+            activeScrollable.scrollTop += e.deltaY;
+          }
+        }
+      };
+
+      window.addEventListener('wheel', handleGlobalWheel, { passive: true });
+      return () => {
+        window.removeEventListener('wheel', handleGlobalWheel);
+      };
     }
   }, []);
 
   return (
     <View style={styles.outerBackground}>
-      <View style={styles.mobileAppContainer}>
+      <View nativeID="mobile-app-root-container" style={styles.mobileAppContainer}>
         <RootNavigator
           renderHomeScreen={(navigateToTab) => (
             <HomeScreen

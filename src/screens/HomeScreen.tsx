@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform } from 'react-native';
 import { Colors, Typography } from '../constants/colors';
 import { CustomButton } from '../components/CustomButton';
 import { CompanyLogoIcon } from '../components/CompanyLogoIcon';
@@ -19,8 +19,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 }) => {
   return (
     <View style={styles.mainWrapper}>
+      {Platform.OS === 'web' && (
+        <style>{`
+          @keyframes goldenShimmerPulse {
+            0% { opacity: 0.75; transform: scale(0.98); }
+            50% { opacity: 1.0; transform: scale(1.02); }
+            100% { opacity: 0.75; transform: scale(0.98); }
+          }
+        `}</style>
+      )}
+
       {/* Floating Sticky Top Banner */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.bannerContainer}
         onPress={onNavigateToExam}
         activeOpacity={0.8}
@@ -32,147 +42,183 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <Text style={styles.bannerChevron}>›</Text>
       </TouchableOpacity>
 
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {/* Missed Commission Hero Card */}
-        <View style={styles.heroCard}>
-        <View style={styles.heroHeaderRow}>
-          <View style={styles.heroTextSection}>
-            <Text style={styles.userGreeting}>{MOCK_USER_PROFILE.name}님,</Text>
-            <Text style={styles.missedHighlightTitle}>
-              놓친 수수료가 <Text style={styles.missedCountText}>{MOCK_USER_PROFILE.missedCommissionCount}건</Text>이 있어요
-            </Text>
-          </View>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Missed Commission Hero Card (황금빛 애니메이션 그라데이션 백드롭 적용) */}
+        <View style={styles.heroCardExpanded}>
+          {/* 우측 상단 노란 선 범위 지정 황금빛 애니메이션 그라데이션 */}
+          <View 
+            style={[
+              styles.goldenAnimatedCornerBackdrop,
+              Platform.OS === 'web' && ({
+                backgroundImage: 'radial-gradient(circle at 100% 0%, rgba(253, 224, 71, 0.85) 0%, rgba(254, 240, 138, 0.55) 35%, rgba(254, 243, 199, 0.20) 65%, rgba(255, 255, 255, 0) 100%)',
+                animation: 'goldenShimmerPulse 3s ease-in-out infinite alternate',
+              } as any)
+            ]} 
+          />
+          <View style={styles.heroHeaderRowExpanded}>
+            <View style={styles.heroTextSectionExpanded}>
+              <Text style={styles.userGreetingExpanded}>{MOCK_USER_PROFILE.name}님,</Text>
+              <Text style={styles.missedHighlightTitleExpanded}>
+                놓친 수수료가 <Text style={styles.missedCountText}>{MOCK_USER_PROFILE.missedCommissionCount}건</Text>이 있어요
+              </Text>
+            </View>
 
-          {/* 3D Wealth Graphic Illustration */}
-          <View style={styles.wealthIconContainer}>
-            <View style={styles.wealthBagCircle}>
-              <Text style={styles.wealthEmoji}>💰</Text>
-              <View style={styles.wealthArrowBadge}>
-                <Text style={styles.arrowEmoji}>🔄</Text>
-              </View>
+            {/* 우측 상단 밀착 초대형 황금돼지 투명 이미지 */}
+            <View style={styles.goldenPigContainer}>
+              <Image
+                source={require('../assets/images/9. 황금돼지 바탕 지움.png')}
+                style={styles.goldenPigImageLarge}
+                resizeMode="contain"
+              />
             </View>
           </View>
+
+          <CustomButton
+            title="내가 놓친 수수료보기"
+            onPress={() => onNavigateToCommission?.()}
+            variant="primary"
+            style={styles.heroButtonLarge}
+          />
         </View>
 
-        <CustomButton
-          title="내가 놓친 수수료보기"
-          onPress={() => onNavigateToCommission?.()}
-          variant="primary"
-          style={styles.cardMainBtn}
-        />
-      </View>
+        {/* "내 보험 수수료" 이중 폴더 탭 적용 카드 */}
+        <View style={styles.tabWindowCardContainer}>
+          {/* 상단 이중 서류 폴더 탭 헤더 영역 */}
+          <View style={styles.windowTabHeaderWrapper}>
+            {/* 1st 앞쪽 메인 탭 (흰색) */}
+            <View style={styles.windowTabHeaderFront}>
+              <Text style={styles.windowTabTitle}>내 보험 수수료</Text>
+              <Text style={styles.windowInfoIcon}>ⓘ</Text>
 
-      {/* "내 보험 수수료" Overview Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeaderRow}>
-          <Text style={styles.cardTitle}>내 보험 수수료</Text>
-          <Text style={styles.infoBadge}>ⓘ</Text>
-        </View>
+              {/* 탭 우측 하단 접합부 유선형 곡선 커브 */}
+              <View 
+                style={[
+                  styles.windowTabRightFilletCurve,
+                  Platform.OS === 'web' && ({
+                    boxShadow: '-4px 4px 0 0 #FFFFFF',
+                  } as any)
+                ]} 
+              />
+            </View>
 
-        <View style={styles.amountRow}>
-          <Text style={styles.totalAmountText}>
-            {formatCurrency(MOCK_USER_PROFILE.missedCommissionAmount)}
-          </Text>
-          <TouchableOpacity activeOpacity={0.6} style={styles.refreshBtn}>
-            <Text style={styles.refreshIcon}>🔄</Text>
-          </TouchableOpacity>
-        </View>
+            {/* 2nd 뒤쪽 이중 겹침 서류 폴더 탭 */}
+            <View style={styles.windowTabHeaderBack} />
 
-        <View style={styles.metricsContainer}>
-          <View style={styles.metricRow}>
-            <Text style={styles.metricLabel}>가입 보험 수</Text>
-            <Text style={styles.metricValue}>{MOCK_USER_PROFILE.totalContractsCount}건</Text>
+            {/* 나머지 상단 배경 바 */}
+            <View style={styles.windowTabBackdropLine} />
           </View>
-          <View style={styles.metricDivider} />
-          <View style={styles.metricRow}>
-            <Text style={styles.metricLabel}>월 납입 보험료</Text>
-            <Text style={styles.metricValue}>{formatCurrency(MOCK_USER_PROFILE.monthlyPremium)}</Text>
+
+          {/* 카드 메인 본체 */}
+          <View style={styles.windowCardBody}>
+            <View style={styles.windowAmountRow}>
+              <Text style={styles.windowAmountText}>
+                {formatCurrency(MOCK_USER_PROFILE.missedCommissionAmount)}
+              </Text>
+              <TouchableOpacity activeOpacity={0.6} style={styles.cleanRefreshBtn}>
+                <Text style={styles.cleanRefreshIcon}>↻</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* 수평 구분선 */}
+            <View style={styles.windowHorizontalDivider} />
+
+            {/* 가입 보험 및 납입 보험료 지표 */}
+            <View style={styles.windowMetricsContainer}>
+              <View style={styles.windowMetricRow}>
+                <Text style={styles.windowMetricLabel}>가입 보험 수</Text>
+                <Text style={styles.windowMetricValue}>{MOCK_USER_PROFILE.totalContractsCount}건</Text>
+              </View>
+              <View style={styles.windowMetricRow}>
+                <Text style={styles.windowMetricLabel}>월 납입 보험료</Text>
+                <Text style={styles.windowMetricValue}>{formatCurrency(MOCK_USER_PROFILE.monthlyPremium)}</Text>
+              </View>
+            </View>
+
+            {/* 하단 밀착 오렌지 버튼 */}
+            <CustomButton
+              title="건 별 수수료 보기"
+              onPress={() => onNavigateToCommission?.()}
+              variant="primary"
+              style={styles.windowBottomBtn}
+            />
           </View>
         </View>
 
-        <CustomButton
-          title="건 별 수수료 보기"
-          onPress={() => onNavigateToCommission?.()}
-          variant="primary"
-          style={styles.cardMainBtn}
-        />
-      </View>
+        {/* "내 보험 계약" Card */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>내 보험 계약</Text>
+          <View style={styles.contractList}>
+            {MOCK_HOME_CONTRACTS.map((contract) => (
+              <View key={contract.id} style={styles.contractItem}>
+                <View style={{ marginRight: 12 }}>
+                  <CompanyLogoIcon companyName={contract.companyName} size={36} />
+                </View>
+                <View style={styles.contractInfo}>
+                  <Text style={styles.productName} numberOfLines={1}>{contract.productName}</Text>
+                  <Text style={styles.commissionSubText}>
+                    계약 수수료 <Text style={styles.questionMarkText}>??? 원</Text>
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
 
-      {/* "내 보험 계약" Card */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>내 보험 계약</Text>
-        <View style={styles.contractList}>
-          {MOCK_HOME_CONTRACTS.map((contract) => (
-            <View key={contract.id} style={styles.contractItem}>
-              <View style={{ marginRight: 12 }}>
-                <CompanyLogoIcon companyName={contract.companyName} size={36} />
-              </View>
-              <View style={styles.contractInfo}>
-                <Text style={styles.productName} numberOfLines={1}>{contract.productName}</Text>
-                <Text style={styles.commissionSubText}>
-                  계약 수수료 <Text style={styles.questionMarkText}>??? 원</Text>
-                </Text>
-              </View>
-            </View>
-          ))}
+          <CustomButton
+            title="나의 보험 계약 수수료 전부 보기"
+            onPress={() => onNavigateToCommission?.()}
+            variant="outline"
+            style={styles.cardOutlineBtn}
+          />
         </View>
 
-        <CustomButton
-          title="나의 보험 계약 수수료 전부 보기"
-          onPress={() => onNavigateToCommission?.()}
-          variant="outline"
-          style={styles.cardOutlineBtn}
-        />
-      </View>
-
-      {/* "최근, 내 코드를 등록한 회원" Card */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>최근, 내 코드를 등록한 회원</Text>
-        <View style={styles.memberSection}>
-          {MOCK_RECRUITED_MEMBERS.map((member) => (
-            <View key={member.id} style={styles.memberCardItem}>
-              <View style={styles.avatarCircle}>
-                <Text style={styles.avatarEmoji}>👩🏻‍💼</Text>
+        {/* "최근, 내 코드를 등록한 회원" Card */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>최근, 내 코드를 등록한 회원</Text>
+          <View style={styles.memberSection}>
+            {MOCK_RECRUITED_MEMBERS.map((member) => (
+              <View key={member.id} style={styles.memberCardItem}>
+                <View style={styles.avatarCircle}>
+                  <Text style={styles.avatarEmoji}>👩🏻‍💼</Text>
+                </View>
+                <Text style={styles.memberName}>{member.name}</Text>
               </View>
-              <Text style={styles.memberName}>{member.name}</Text>
-            </View>
-          ))}
+            ))}
+          </View>
+
+          <CustomButton
+            title="내 회원 전체보기"
+            onPress={() => onNavigateToMore?.()}
+            variant="outline"
+            style={styles.cardOutlineBtn}
+          />
         </View>
 
-        <CustomButton
-          title="내 회원 전체보기"
-          onPress={() => onNavigateToMore?.()}
-          variant="outline"
-          style={styles.cardOutlineBtn}
-        />
-      </View>
+        {/* "이번 달 혜택 & 수수료 TOP 3" Card */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{"이번 달 혜택 & 수수료 TOP 3"}</Text>
+          <View style={styles.topProductList}>
+            {MOCK_TOP_PRODUCTS.map((prod) => (
+              <View key={prod.id} style={styles.topProductItem}>
+                <View style={{ marginRight: 12 }}>
+                  <CompanyLogoIcon companyName={prod.companyName} size={36} />
+                </View>
+                <View style={styles.topProdInfo}>
+                  <Text style={styles.companySubLabel}>{prod.companyName}</Text>
+                  <Text style={styles.topProdName} numberOfLines={1}>{prod.productName}</Text>
+                </View>
+                <Text style={styles.rateHighlightText}>{prod.rate}</Text>
+              </View>
+            ))}
+          </View>
 
-      {/* "이번 달 혜택 & 수수료 TOP 3" Card */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>{"이번 달 혜택 & 수수료 TOP 3"}</Text>
-        <View style={styles.topProductList}>
-          {MOCK_TOP_PRODUCTS.map((prod) => (
-            <View key={prod.id} style={styles.topProductItem}>
-              <View style={{ marginRight: 12 }}>
-                <CompanyLogoIcon companyName={prod.companyName} size={36} />
-              </View>
-              <View style={styles.topProdInfo}>
-                <Text style={styles.companySubLabel}>{prod.companyName}</Text>
-                <Text style={styles.topProdName} numberOfLines={1}>{prod.productName}</Text>
-              </View>
-              <Text style={styles.rateHighlightText}>{prod.rate}</Text>
-            </View>
-          ))}
+          <CustomButton
+            title="상품 수수료 전체보기"
+            onPress={() => onNavigateToCommission?.()}
+            variant="outline"
+            style={styles.cardOutlineBtn}
+          />
         </View>
-
-        <CustomButton
-          title="상품 수수료 전체보기"
-          onPress={() => onNavigateToCommission?.()}
-          variant="outline"
-          style={styles.cardOutlineBtn}
-        />
-      </View>
-    </ScrollView>
+      </ScrollView>
     </View>
   );
 };
@@ -228,10 +274,15 @@ const styles = StyleSheet.create({
     color: Colors.primaryDark,
     fontWeight: '400',
   },
-  heroCard: {
+  heroCardExpanded: {
     backgroundColor: Colors.surface,
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 22,
+    paddingTop: 38,
+    paddingBottom: 24,
+    paddingHorizontal: 22,
+    minHeight: 265,
+    position: 'relative',
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: Colors.borderLight,
     shadowColor: Colors.shadow,
@@ -240,66 +291,186 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
   },
-  heroHeaderRow: {
+  goldenAnimatedCornerBackdrop: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: '54%',
+    height: '75%',
+    borderTopRightRadius: 22,
+    borderBottomLeftRadius: 110,
+    zIndex: 0,
+  },
+  heroHeaderRowExpanded: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
+    minHeight: 155,
     marginBottom: 18,
+    position: 'relative',
   },
-  heroTextSection: {
+  heroTextSectionExpanded: {
     flex: 1,
     paddingRight: 10,
+    justifyContent: 'flex-end',
+    paddingBottom: 4,
+    zIndex: 2,
   },
-  userGreeting: {
-    fontSize: Typography.size.lg,
+  userGreetingExpanded: {
+    fontSize: 18,
     fontWeight: Typography.weight.bold,
     color: Colors.textPrimary,
     marginBottom: 4,
   },
-  missedHighlightTitle: {
-    fontSize: Typography.size.xl,
+  missedHighlightTitleExpanded: {
+    fontSize: 20,
     fontWeight: Typography.weight.heavy,
     color: Colors.textPrimary,
-    lineHeight: 28,
+    lineHeight: 27,
   },
   missedCountText: {
     color: Colors.primary,
   },
-  wealthIconContainer: {
-    width: 64,
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  wealthBagCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.accentGoldLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#FDE68A',
-    position: 'relative',
-  },
-  wealthEmoji: {
-    fontSize: 28,
-  },
-  wealthArrowBadge: {
+  goldenPigContainer: {
     position: 'absolute',
-    bottom: -2,
-    right: -2,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: Colors.accentCyan,
+    top: -38,
+    right: -24,
+    width: 180,
+    height: 180,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
   },
-  arrowEmoji: {
-    fontSize: 11,
+  goldenPigImageLarge: {
+    width: 180,
+    height: 180,
   },
-  cardMainBtn: {
+  heroButtonLarge: {
+    width: '100%',
+    marginTop: 8,
+    zIndex: 3,
+  },
+  /* "내 보험 수수료" 이중 폴더 탭 스타일 카드 */
+  tabWindowCardContainer: {
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  windowTabHeaderWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: 40,
+    position: 'relative',
+    zIndex: 2,
+  },
+  windowTabHeaderFront: {
+    backgroundColor: Colors.surface,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: Colors.borderLight,
+    position: 'relative',
+    zIndex: 3,
+  },
+  windowTabRightFilletCurve: {
+    position: 'absolute',
+    right: -12,
+    bottom: 0,
+    width: 12,
+    height: 12,
+    backgroundColor: 'transparent',
+    borderBottomLeftRadius: 12,
+  },
+  windowTabHeaderBack: {
+    width: 160,
+    height: 32,
+    backgroundColor: '#E4EFFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    marginLeft: -8,
+    marginBottom: 0,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: '#D0E2FF',
+    zIndex: 1,
+  },
+  windowTabBackdropLine: {
+    flex: 1,
+    height: 26,
+    backgroundColor: '#F0F5FF',
+    borderTopRightRadius: 18,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: '#E2E8F0',
+    alignSelf: 'flex-end',
+  },
+  windowCardBody: {
+    backgroundColor: Colors.surface,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    marginTop: -1,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  windowAmountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  windowAmountText: {
+    fontSize: 28,
+    fontWeight: Typography.weight.heavy,
+    color: Colors.textPrimary,
+    letterSpacing: -0.5,
+  },
+  cleanRefreshBtn: {
+    padding: 6,
+    borderRadius: 20,
+  },
+  cleanRefreshIcon: {
+    fontSize: 22,
+    color: Colors.textMuted,
+    fontWeight: '300',
+  },
+  windowHorizontalDivider: {
+    height: 1,
+    backgroundColor: Colors.borderLight,
+    marginBottom: 16,
+  },
+  windowMetricsContainer: {
+    gap: 10,
+    marginBottom: 18,
+  },
+  windowMetricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  windowMetricLabel: {
+    fontSize: Typography.size.sm,
+    color: Colors.textSecondary,
+  },
+  windowMetricValue: {
+    fontSize: Typography.size.base,
+    fontWeight: Typography.weight.bold,
+    color: Colors.textPrimary,
+  },
+  windowBottomBtn: {
     width: '100%',
     marginTop: 4,
   },

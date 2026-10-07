@@ -11,7 +11,7 @@ export const CommissionScreen: React.FC = () => {
   const nonHolderContracts = MOCK_COMMISSION_CONTRACTS.filter(c => c.category === 'non_holder');
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       {/* Top Summary Card */}
       <View style={styles.summaryCard}>
         <View style={styles.cardHeaderRow}>

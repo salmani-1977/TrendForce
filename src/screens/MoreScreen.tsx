@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Colors, Typography } from '../constants/colors';
 import { MOCK_USER_PROFILE } from '../constants/mockData';
+import { ProfileManagementScreen } from './ProfileManagementScreen';
+import { OrganizationManagementScreen } from './OrganizationManagementScreen';
+import { InviteCodeStubScreen } from './InviteCodeStubScreen';
+
+type MoreSubPageType = 'main' | 'profile' | 'organization' | 'invite_code';
 
 interface MenuItem {
   id: string;
   icon: string;
   label: string;
+  subPage?: MoreSubPageType;
 }
 
 interface MenuGroup {
@@ -18,9 +24,9 @@ const MENU_GROUPS: MenuGroup[] = [
   {
     title: '내 정보',
     items: [
-      { id: 'profile', icon: '🪪', label: '프로필 관리' },
-      { id: 'org', icon: '📁', label: '조직 관리' },
-      { id: 'invite_reg', icon: '🎒', label: '초대 코드 등록' },
+      { id: 'profile', icon: '🪪', label: '프로필 관리', subPage: 'profile' },
+      { id: 'org', icon: '📁', label: '조직 관리', subPage: 'organization' },
+      { id: 'invite_reg', icon: '🎒', label: '초대 코드 등록', subPage: 'invite_code' },
       { id: 'invite_share', icon: '🎒', label: '초대 코드 공유' },
       { id: 'contracts', icon: '📦', label: '계약 내역' },
       { id: 'commissions', icon: '💵', label: '수수료 내역' },
@@ -50,8 +56,22 @@ const MENU_GROUPS: MenuGroup[] = [
 ];
 
 export const MoreScreen: React.FC = () => {
+  const [currentSubPage, setCurrentSubPage] = useState<MoreSubPageType>('main');
+
+  // [2단계 공정] 서브페이지 라우팅 — 클릭 시 해당 서브페이지 컴포넌트를 렌더링하고
+  // 각 서브페이지 내부의 onBack 콜백으로 'main'으로 복귀한다.
+  if (currentSubPage === 'profile') {
+    return <ProfileManagementScreen onBack={() => setCurrentSubPage('main')} />;
+  }
+  if (currentSubPage === 'organization') {
+    return <OrganizationManagementScreen onBack={() => setCurrentSubPage('main')} />;
+  }
+  if (currentSubPage === 'invite_code') {
+    return <InviteCodeStubScreen onBack={() => setCurrentSubPage('main')} />;
+  }
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       {/* Profile Bar */}
       <View style={styles.profileContainer}>
         <View style={styles.nameGroup}>
@@ -79,7 +99,16 @@ export const MoreScreen: React.FC = () => {
           <Text style={styles.groupTitleText}>{group.title}</Text>
           <View style={styles.itemList}>
             {group.items.map((item) => (
-              <TouchableOpacity key={item.id} style={styles.menuRowItem} activeOpacity={0.7}>
+              <TouchableOpacity
+                key={item.id}
+                style={styles.menuRowItem}
+                activeOpacity={0.7}
+                onPress={() => {
+                  if (item.subPage) {
+                    setCurrentSubPage(item.subPage);
+                  }
+                }}
+              >
                 <View style={styles.menuLeft}>
                   <Text style={styles.menuIconEmoji}>{item.icon}</Text>
                   <Text style={styles.menuLabelText}>{item.label}</Text>

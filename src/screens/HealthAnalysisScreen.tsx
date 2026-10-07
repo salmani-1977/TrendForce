@@ -31,7 +31,7 @@ export const HealthAnalysisScreen: React.FC<HealthAnalysisScreenProps> = ({ onNa
   }, [translateY]);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       {/* Top 3D Mascot Character Banner with Floating Animation */}
       <View style={styles.topMascotContainer}>
         <Animated.View style={[styles.mascotFloatingWrapper, { transform: [{ translateY }] }]}>
