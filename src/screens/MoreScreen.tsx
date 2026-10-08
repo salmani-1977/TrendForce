@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import { Colors, Typography } from '../constants/colors';
 import { MOCK_USER_PROFILE } from '../constants/mockData';
 import { ProfileManagementScreen } from './ProfileManagementScreen';
 import { OrganizationManagementScreen } from './OrganizationManagementScreen';
 import { InviteCodeStubScreen } from './InviteCodeStubScreen';
+import { LifeInsuranceCommissionScreen } from './LifeInsuranceCommissionScreen';
+import { NonLifeInsuranceCommissionScreen } from './NonLifeInsuranceCommissionScreen';
 
-type MoreSubPageType = 'main' | 'profile' | 'organization' | 'invite_code';
+export type MoreSubPageType = 'main' | 'profile' | 'organization' | 'invite_code' | 'life_rates' | 'nonlife_rates';
 
 interface MenuItem {
   id: string;
@@ -42,8 +44,8 @@ const MENU_GROUPS: MenuGroup[] = [
   {
     title: '보험 상품',
     items: [
-      { id: 'life_rates', icon: '☂️', label: '생명보험 상품 수수료율' },
-      { id: 'nonlife_rates', icon: '☂️', label: '손해보험 상품 수수료율' },
+      { id: 'life_rates', icon: '☂️', label: '생명보험 상품 수수료율', subPage: 'life_rates' },
+      { id: 'nonlife_rates', icon: '☂️', label: '손해보험 상품 수수료율', subPage: 'nonlife_rates' },
     ],
   },
   {
@@ -55,8 +57,61 @@ const MENU_GROUPS: MenuGroup[] = [
   },
 ];
 
-export const MoreScreen: React.FC = () => {
-  const [currentSubPage, setCurrentSubPage] = useState<MoreSubPageType>('main');
+interface MoreScreenProps {
+  initialSubPage?: MoreSubPageType;
+}
+
+export const MoreScreen: React.FC<MoreScreenProps> = ({ initialSubPage = 'main' }) => {
+  const [currentSubPage, setCurrentSubPage] = useState<MoreSubPageType>(initialSubPage);
+
+  useEffect(() => {
+    if (initialSubPage) {
+      setCurrentSubPage(initialSubPage);
+    }
+
+    if (Platform.OS === 'web') {
+      const styleId = 'icon-micro-animations-style';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.innerHTML = `
+          @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+          }
+          @keyframes shieldFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+          }
+          .animate-heartbeat {
+            animation: heartbeat 1.2s infinite ease-in-out;
+            transform-origin: center;
+          }
+          .animate-shield-float {
+            animation: shieldFloat 2.0s infinite ease-in-out;
+            transform-origin: center;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+  }, [initialSubPage]);
+
+  const handleKakaoShare = () => {
+    if (Platform.OS === 'web') {
+      window.alert(`[스탭] 카카오톡 공유 시트\n조대 코드: ${MOCK_USER_PROFILE.inviteCode}`);
+    } else {
+      Alert.alert('[스탭] 카카오톡 공유 시트', `조대 코드: ${MOCK_USER_PROFILE.inviteCode}`);
+    }
+  };
+
+  const handleCustomerService = () => {
+    if (Platform.OS === 'web') {
+      window.alert('[스탭] 채널톡 상담 채팅');
+    } else {
+      Alert.alert('[스탭]', '채널톡 상담 채팅');
+    }
+  };
 
   // [2단계 공정] 서브페이지 라우팅 — 클릭 시 해당 서브페이지 컴포넌트를 렌더링하고
   // 각 서브페이지 내부의 onBack 콜백으로 'main'으로 복귀한다.
@@ -69,6 +124,45 @@ export const MoreScreen: React.FC = () => {
   if (currentSubPage === 'invite_code') {
     return <InviteCodeStubScreen onBack={() => setCurrentSubPage('main')} />;
   }
+  if (currentSubPage === 'life_rates') {
+    return <LifeInsuranceCommissionScreen onBack={() => setCurrentSubPage('main')} />;
+  }
+  if (currentSubPage === 'nonlife_rates') {
+    return <NonLifeInsuranceCommissionScreen onBack={() => setCurrentSubPage('main')} />;
+  }
+
+  // [공정 2] 아이콘 렌더링 — 생명보험(하트 펄스 💙), 손해보험(안전 방패 둥둥 🛡️) 마이크로 애니메이션 연동
+  const renderMenuIcon = (item: MenuItem) => {
+    if (item.id === 'life_rates') {
+      if (Platform.OS === 'web') {
+        return (
+          <div className="animate-heartbeat" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24 }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="24" height="24" rx="12" fill="#EBF3FF" />
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#2563EB" />
+            </svg>
+          </div>
+        );
+      }
+      return <Text style={{ fontSize: 20 }}>💙</Text>;
+    }
+
+    if (item.id === 'nonlife_rates') {
+      if (Platform.OS === 'web') {
+        return (
+          <div className="animate-shield-float" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24 }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="24" height="24" rx="12" fill="#FEE2E2" />
+              <path d="M12 2L4 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-8-3zm-1 15l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z" fill="#DC2626" />
+            </svg>
+          </div>
+        );
+      }
+      return <Text style={{ fontSize: 20 }}>🛡️</Text>;
+    }
+
+    return <Text style={styles.menuIconEmoji}>{item.icon}</Text>;
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -83,7 +177,11 @@ export const MoreScreen: React.FC = () => {
       </View>
 
       {/* KakaoTalk Invitation Banner */}
-      <TouchableOpacity style={styles.kakaoBanner} activeOpacity={0.85}>
+      <TouchableOpacity 
+        style={styles.kakaoBanner} 
+        activeOpacity={0.85}
+        onPress={handleKakaoShare}
+      >
         <View style={styles.kakaoTextGroup}>
           <Text style={styles.kakaoSubText}>카카오톡으로 간편하게</Text>
           <Text style={styles.kakaoMainText}>초대 코드 바로 공유하기</Text>
@@ -106,11 +204,15 @@ export const MoreScreen: React.FC = () => {
                 onPress={() => {
                   if (item.subPage) {
                     setCurrentSubPage(item.subPage);
+                  } else if (item.id === 'cs') {
+                    handleCustomerService();
+                  } else if (item.id === 'invite_share') {
+                    handleKakaoShare();
                   }
                 }}
               >
                 <View style={styles.menuLeft}>
-                  <Text style={styles.menuIconEmoji}>{item.icon}</Text>
+                  {renderMenuIcon(item)}
                   <Text style={styles.menuLabelText}>{item.label}</Text>
                 </View>
               </TouchableOpacity>

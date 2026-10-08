@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Clipboard, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Clipboard, Platform, Alert } from 'react-native';
 import { Colors, Typography } from '../constants/colors';
 import { MOCK_USER_PROFILE } from '../constants/mockData';
 
 interface DrawerMenuScreenProps {
   onClose: () => void;
+  onNavigateToProfile?: () => void;
+  onNavigateToInviteRegister?: () => void;
+  onNavigateToOrganization?: () => void;
 }
 
-export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({ onClose }) => {
+export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({
+  onClose,
+  onNavigateToProfile,
+  onNavigateToInviteRegister,
+  onNavigateToOrganization,
+}) => {
   const [copiedToast, setCopiedToast] = useState<boolean>(false);
 
   const handleCopyInviteCode = () => {
@@ -16,6 +24,22 @@ export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({ onClose }) =
     setTimeout(() => {
       setCopiedToast(false);
     }, 2000);
+  };
+
+  const handleKakaoShare = () => {
+    if (Platform.OS === 'web') {
+      window.alert(`[스탭] 카카오톡 공유 시트\n조대 코드: ${MOCK_USER_PROFILE.inviteCode}`);
+    } else {
+      Alert.alert('[스탭] 카카오톡 공유 시트', `조대 코드: ${MOCK_USER_PROFILE.inviteCode}`);
+    }
+  };
+
+  const handleCustomerService = () => {
+    if (Platform.OS === 'web') {
+      window.alert('[스탭] 채널톡 상담 채팅');
+    } else {
+      Alert.alert('[스탭]', '채널톡 상담 채팅');
+    }
   };
 
   return (
@@ -31,7 +55,14 @@ export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({ onClose }) =
       <SafeAreaView style={styles.drawerContent}>
         <View style={styles.innerContainer}>
           {/* Header User Profile Row */}
-          <TouchableOpacity style={styles.userHeaderRow} activeOpacity={0.7}>
+          <TouchableOpacity 
+            style={styles.userHeaderRow} 
+            activeOpacity={0.7}
+            onPress={() => {
+              onClose();
+              onNavigateToProfile?.();
+            }}
+          >
             <View style={styles.userInfoLeft}>
               <Text style={styles.userNameText}>{MOCK_USER_PROFILE.name}님</Text>
               <View style={styles.appointedBadge}>
@@ -64,7 +95,11 @@ export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({ onClose }) =
           )}
 
           {/* KakaoTalk Share Banner */}
-          <TouchableOpacity style={styles.kakaoBanner} activeOpacity={0.85}>
+          <TouchableOpacity 
+            style={styles.kakaoBanner} 
+            activeOpacity={0.85}
+            onPress={handleKakaoShare}
+          >
             <View style={styles.kakaoTextGroup}>
               <Text style={styles.kakaoSubText}>카카오톡으로 간편하게</Text>
               <Text style={styles.kakaoMainText}>초대 코드 바로 공유하기</Text>
@@ -76,13 +111,33 @@ export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({ onClose }) =
 
           {/* Primary Action Items */}
           <View style={styles.menuGroupSection}>
-            <TouchableOpacity style={styles.menuItemRow} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={styles.menuItemRow} 
+              activeOpacity={0.7}
+              onPress={() => {
+                onClose();
+                onNavigateToInviteRegister?.();
+              }}
+            >
               <Text style={styles.menuItemText}>초대 코드 등록</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemRow} activeOpacity={0.7}>
+
+            <TouchableOpacity 
+              style={styles.menuItemRow} 
+              activeOpacity={0.7}
+              onPress={handleKakaoShare}
+            >
               <Text style={styles.menuItemText}>초대 코드 공유</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemRow} activeOpacity={0.7}>
+
+            <TouchableOpacity 
+              style={styles.menuItemRow} 
+              activeOpacity={0.7}
+              onPress={() => {
+                onClose();
+                onNavigateToOrganization?.();
+              }}
+            >
               <Text style={styles.menuItemText}>조직 관리</Text>
             </TouchableOpacity>
           </View>
@@ -91,7 +146,11 @@ export const DrawerMenuScreen: React.FC<DrawerMenuScreenProps> = ({ onClose }) =
 
           {/* Customer Service & Legal Terms */}
           <View style={styles.menuGroupSection}>
-            <TouchableOpacity style={styles.menuItemRow} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={styles.menuItemRow} 
+              activeOpacity={0.7}
+              onPress={handleCustomerService}
+            >
               <Text style={styles.menuItemMutedText}>고객센터</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItemRow} activeOpacity={0.7}>

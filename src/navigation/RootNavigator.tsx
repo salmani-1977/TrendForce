@@ -10,8 +10,11 @@ interface RootNavigatorProps {
   renderCommissionScreen: () => React.ReactNode;
   renderHealthScreen: (onNavigateToReport: () => void) => React.ReactNode;
   renderExamScreen: (onClose: () => void) => React.ReactNode;
-  renderMoreScreen: () => React.ReactNode;
-  renderDrawerMenu: (onClose: () => void) => React.ReactNode;
+  renderMoreScreen: (initialSubPage?: 'main' | 'profile' | 'organization' | 'invite_code' | 'life_rates' | 'nonlife_rates') => React.ReactNode;
+  renderDrawerMenu: (
+    onClose: () => void,
+    navigateToMoreSubPage?: (subPage: 'profile' | 'organization' | 'invite_code' | 'life_rates' | 'nonlife_rates') => void
+  ) => React.ReactNode;
   renderNotificationScreen: (onClose: () => void) => React.ReactNode;
   renderHealthReportScreen: (onClose: () => void) => React.ReactNode;
 }
@@ -27,12 +30,22 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
   renderHealthReportScreen,
 }) => {
   const [currentTab, setCurrentTab] = useState<TabType>('home');
+  const [moreSubPage, setMoreSubPage] = useState<'main' | 'profile' | 'organization' | 'invite_code' | 'life_rates' | 'nonlife_rates'>('main');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const [isHealthReportOpen, setIsHealthReportOpen] = useState<boolean>(false);
 
   const handleTabChange = (tab: TabType) => {
+    if (tab !== 'more') {
+      setMoreSubPage('main');
+    }
     setCurrentTab(tab);
+  };
+
+  const handleNavigateToMoreSubPage = (subPage: 'profile' | 'organization' | 'invite_code' | 'life_rates' | 'nonlife_rates') => {
+    setMoreSubPage(subPage);
+    setCurrentTab('more');
+    setIsDrawerOpen(false);
   };
 
   const isExamTab = currentTab === 'exam';
@@ -48,7 +61,7 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
       case 'exam':
         return renderHomeScreen(handleTabChange);
       case 'more':
-        return renderMoreScreen();
+        return renderMoreScreen(moreSubPage);
       default:
         return renderHomeScreen(handleTabChange);
     }
@@ -89,7 +102,7 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
       {/* [공정 7] 전체메뉴 드로어 — In-App absolute 오버레이 (Modal 제거, 앱 프레임 내부 고정) */}
       {isDrawerOpen && (
         <View style={styles.inAppOverlay}>
-          {renderDrawerMenu(() => setIsDrawerOpen(false))}
+          {renderDrawerMenu(() => setIsDrawerOpen(false), handleNavigateToMoreSubPage)}
         </View>
       )}
 

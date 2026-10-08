@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, Image } from 'react-native';
 
-const SHINHAN_LOGO = require('../../개발 앱 제공할 이미지 보관함/10. 신한로고-removebg-preview.png');
+const SHINHAN_LOGO = require("../../'개발 앱' 제공할 이미지 보관함/10. 신한로고-removebg-preview.png");
 
 interface CompanyLogoIconProps {
   companyName: string;
@@ -20,6 +20,36 @@ export const CompanyLogoIcon: React.FC<CompanyLogoIconProps> = ({ companyName, s
         style={{ width: size, height: size, borderRadius: size / 2 }}
         resizeMode="contain"
       />
+    );
+  }
+
+  // 1-2. 한화생명 / 한화손해보험 (한화 오렌지 HH 엠블럼)
+  if (normalizedName.includes('한화')) {
+    if (isWeb) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="18" fill="#F37023" />
+          <text
+            x="18"
+            y="22"
+            textAnchor="middle"
+            fill="white"
+            fontSize="12"
+            fontWeight="900"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            letterSpacing="-0.5"
+          >
+            HH
+          </text>
+        </svg>
+      );
+    }
+    return (
+      <View style={[styles.circle, { width: size, height: size, borderRadius: size / 2, backgroundColor: '#F37023' }]}>
+        <Text style={[styles.symbolText, { fontSize: size * 0.38, fontWeight: '900', color: '#FFFFFF' }]}>
+          HH
+        </Text>
+      </View>
     );
   }
 

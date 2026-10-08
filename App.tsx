@@ -104,8 +104,15 @@ export default function App() {
             <HealthAnalysisScreen onNavigateToReport={onNavigateToReport} />
           )}
           renderExamScreen={(onClose) => <ExamApplicationModal onClose={onClose} />}
-          renderMoreScreen={() => <MoreScreen />}
-          renderDrawerMenu={(onClose) => <DrawerMenuScreen onClose={onClose} />}
+          renderMoreScreen={(initialSubPage) => <MoreScreen initialSubPage={initialSubPage} />}
+          renderDrawerMenu={(onClose, navigateToMoreSubPage) => (
+            <DrawerMenuScreen
+              onClose={onClose}
+              onNavigateToProfile={() => navigateToMoreSubPage?.('profile')}
+              onNavigateToInviteRegister={() => navigateToMoreSubPage?.('invite_code')}
+              onNavigateToOrganization={() => navigateToMoreSubPage?.('organization')}
+            />
+          )}
           renderNotificationScreen={(onClose) => <NotificationScreen onClose={onClose} />}
           renderHealthReportScreen={(onClose) => <HealthReportScreen onClose={onClose} />}
         />
